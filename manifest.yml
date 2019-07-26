@@ -1,6 +1,6 @@
 ---
 applications:
- - name: EquitySOSApi
+ - name: Equity-sos-api
    random-route: true
    memory: 64M
    buildpacks:

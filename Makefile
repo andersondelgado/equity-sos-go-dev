@@ -1,7 +1,7 @@
 all: test
 
 clean:
-	rm -f equity-sos-go
+	rm -f equity-sos-api
 
 install: prepare
 	godep go install

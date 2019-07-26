@@ -1,11 +1,11 @@
 ---
 applications:
- - name: Equity-sos-api
+ - name: equity-sos-go-dev
    random-route: true
    memory: 64M
    buildpacks:
     - https://github.com/cloudfoundry/go-buildpack.git
    env:
-     GOPACKAGENAME: EquitySOSApi
+     GOPACKAGENAME: github.com/andersondelgado/equity-sos-go-dev
    
 

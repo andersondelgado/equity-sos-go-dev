@@ -44,6 +44,7 @@ func SelectDBTest(c *gin.Context) {
 	errs := cloudant.DB(dbName).AllDocs(&result, couchdb.Options{"include_docs": true, "skip": 1, "limit": 100})
 	// errs := cloudant.DB(dbName).AllDocs(&result, couchdb.Options{"include_docs": false})
 	if errs != nil {
+		fmt.Println("error: ",errs)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to fetch docs"})
 	} else {
 

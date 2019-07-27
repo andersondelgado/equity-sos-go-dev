@@ -10,4 +10,4 @@ RUN apk --no-cache add curl
 WORKDIR /root/
 COPY --from=0 go/src/app/server .
 CMD ["./server"]
-LABEL version=api-equity-sos-3
+LABEL version=demo-3

@@ -13,20 +13,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func StrDrive() string {
-	env := EnviromentsRaw()
-	psqlInfo := fmt.Sprintf(`%s:%s@tcp(%s:%s)/%s`,
-		env.DbUser, env.DbPassword, env.DbHost, env.DbPort, env.DbName)
-	s := psqlInfo
-	return s
-}
-
-func StrDialect() string {
-	env := EnviromentsRaw()
-	s := env.DbDialect
-	return s
-}
-
 func StrNoSQLDrive() string {
 	//When running locally, get credentials from .env file.
 	err := godotenv.Load()
@@ -87,6 +73,33 @@ func EnviromentsRaw() Enviroment {
 	json.Unmarshal(byteData, &enviroment)
 
 	return enviroment
+}
+
+func IBMIAMCredentialRaw () IBMIAMCredential{
+	data, err := ioutil.ReadFile("config/apiKey_ibm.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// fmt.Println("#string(data): ",string(data))
+	byteData := []byte(string(data))
+	var enviroment IBMIAMCredential
+	json.Unmarshal(byteData, &enviroment)
+
+	return enviroment
+}
+
+type IBMIAMCredential struct {
+	Apikey               string `json:"apikey"`
+	Host                 string `json:"host"`
+	IamApikeyDescription string `json:"iam_apikey_description"`
+	IamApikeyName        string `json:"iam_apikey_name"`
+	IamRoleCrn           string `json:"iam_role_crn"`
+	IamServiceidCrn      string `json:"iam_serviceid_crn"`
+	Url                  string `json:"url"`
+	Username             string `json:"username"`
+	Password             string `json:"password"`
+	Port                 string `json:"port"`
 }
 
 type Enviroment struct {

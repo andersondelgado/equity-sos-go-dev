@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"strconv"
 
 	//"../../config"
@@ -17,7 +16,6 @@ import (
 	"github.com/andersondelgado/equity-sos-go-dev/model"
 	"github.com/andersondelgado/equity-sos-go-dev/util"
 	"github.com/gin-gonic/gin"
-	//"github.com/timjacobi/go-couchdb"
 )
 
 

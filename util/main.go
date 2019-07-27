@@ -9,13 +9,13 @@ import (
 	"log"
 	"net/http"
 	"strings"
-
 	"github.com/andersondelgado/equity-sos-go-dev/config"
 	"github.com/andersondelgado/equity-sos-go-dev/model"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/timjacobi/go-couchdb"
 	"golang.org/x/crypto/bcrypt"
+	"net/url"
 )
 
 type Response struct {
@@ -105,6 +105,15 @@ type CustomClaims struct {
 type Paginate struct {
 	Page  int `json:"page"`
 	Limit int `json:"limit"`
+}
+
+type CustomHeaders struct {
+	Key string `json:"key"`
+}
+
+type ResponseIBM struct {
+	StatusCode  uint   `json:"status_code"`
+	AccessToken string `json:"access_token"`
 }
 
 // type CustomValidator struct {
@@ -1015,11 +1024,111 @@ func CurlBodyJSON(method string, uri string, payload interface{}) string {
 	return strBody
 }
 
+func GetAccessToken() string {
+
+	uri := "https://iam.cloud.ibm.com/identity/token"
+	method := "POST"
+
+	headers := map[string]string{"Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json"};
+	apiKey := config.IBMIAMCredentialRaw().Apikey
+
+	//payload := map[string]interface{}{
+	//	"grant_type":    "urn:ibm:params:oauth:grant-type:apikey",
+	//	"response_type": "cloud_iam",
+	//	"apikey":        apiKey,
+	//}
+
+	payload := url.Values{}
+	payload.Set("grant_type", "urn:ibm:params:oauth:grant-type:apikey")
+	payload.Set("response_type", "cloud_iam")
+	payload.Set("apikey", apiKey)
+
+	resp := CurlFormURLEncodedMustHeader(method, uri, payload, headers)
+
+	jsonToString := (resp)
+	decode := []byte(jsonToString)
+	var results ResponseIBM
+	json.Unmarshal(decode, &results)
+
+	strBody := results.AccessToken
+	//fmt.Println("\n strBody: ", strBody)
+	return strBody
+}
+
+func CurlFormURLEncodedMustHeader(method string, uri string, payload url.Values, headers map[string]string) string {
+
+	url := uri
+	//contentType := "application/json"
+
+	var btes io.Reader
+	if payload != nil {
+		btes = strings.NewReader(payload.Encode())
+	} else {
+		btes = nil
+	}
+
+	req, _ := http.NewRequest(method, url, btes)
+	//req.Header.Set("Content-Type", contentType)
+
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	client := http.Client{}
+	resp, _ := client.Do(req)
+
+	defer resp.Body.Close()
+	//fmt.Println("\n##response remote: ", resp)
+	//fmt.Println("\n\n")
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	strBody := string(body)
+	return strBody
+}
+
+func CurlBodyJSONMustHeader(method string, uri string, payload interface{}, headers map[string]string) string {
+
+	url := uri
+	//contentType := "application/json"
+
+	var btes io.Reader
+	if payload != nil {
+		strToken, _ := json.Marshal(payload)
+		jsonstr := []byte(strToken)
+		btes = bytes.NewBuffer(jsonstr)
+	} else {
+		btes = nil
+	}
+
+	req, _ := http.NewRequest(method, url, btes)
+	//req.Header.Set("Content-Type", contentType)
+
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	client := http.Client{}
+	resp, _ := client.Do(req)
+
+	defer resp.Body.Close()
+	//fmt.Println("\n##response remote: ", resp)
+	//fmt.Println("\n\n")
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	strBody := string(body)
+	return strBody
+}
+
 func FindDataIndex(payload model.QuerySelectorPaginateIndex) string {
 	cloudantUrl := config.StrNoSQLDrive()
 	dbName := config.StrNoSQLDBname()
 	uri := cloudantUrl + "/" + dbName + "/_find"
-	resultData := CurlBodyJSON("POST", uri, payload)
+	accessToken := GetAccessToken()
+	headers := map[string]string{"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + accessToken};
+	//resultData := CurlBodyJSON("POST", uri, payload)
+	resultData := CurlBodyJSONMustHeader("POST", uri, payload, headers)
 	return resultData
 }
 
@@ -1027,7 +1136,10 @@ func FindDataPaginate(payload model.QuerySelectorPaginate) string {
 	cloudantUrl := config.StrNoSQLDrive()
 	dbName := config.StrNoSQLDBname()
 	uri := cloudantUrl + "/" + dbName + "/_find"
-	resultData := CurlBodyJSON("POST", uri, payload)
+	accessToken := GetAccessToken()
+	headers := map[string]string{"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + accessToken};
+	//resultData := CurlBodyJSON("POST", uri, payload)
+	resultData := CurlBodyJSONMustHeader("POST", uri, payload, headers)
 	return resultData
 }
 
@@ -1035,7 +1147,10 @@ func FindDataAll(payload model.QuerySelectorAll) string {
 	cloudantUrl := config.StrNoSQLDrive()
 	dbName := config.StrNoSQLDBname()
 	uri := cloudantUrl + "/" + dbName + "/_find"
-	resultData := CurlBodyJSON("POST", uri, payload)
+	accessToken := GetAccessToken()
+	headers := map[string]string{"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + accessToken};
+	//resultData := CurlBodyJSON("POST", uri, payload)
+	resultData := CurlBodyJSONMustHeader("POST", uri, payload, headers)
 	return resultData
 }
 
@@ -1043,6 +1158,94 @@ func FindDataInterface(payload interface{}) string {
 	cloudantUrl := config.StrNoSQLDrive()
 	dbName := config.StrNoSQLDBname()
 	uri := cloudantUrl + "/" + dbName + "/_find"
-	resultData := CurlBodyJSON("POST", uri, payload)
+	accessToken := GetAccessToken()
+	headers := map[string]string{"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + accessToken};
+	//resultData := CurlBodyJSON("POST", uri, payload)
+	resultData := CurlBodyJSONMustHeader("POST", uri, payload, headers)
 	return resultData
+}
+
+func PostCouchDB(payload interface{}) (string, string, error) {
+	cloudantUrl := config.StrNoSQLDrive()
+	dbName := config.StrNoSQLDBname()
+	uri := cloudantUrl + "/" + dbName
+	accessToken := GetAccessToken()
+	headers := map[string]string{"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + accessToken};
+	//resultData := CurlBodyJSON("POST", uri, payload)
+	resultData := CurlBodyJSONMustHeader("POST", uri, payload, headers)
+
+	jsonToString := (resultData)
+	decode := []byte(jsonToString)
+	var data struct {
+		ID  string `json:"id"`
+		OK  bool   `json:"ok"`
+		Rev string `json:"rev"`
+	}
+	json.Unmarshal(decode, &data)
+
+	return data.ID, data.Rev, nil
+}
+
+//func PutCouchDBByID(id string, payload interface{}) (newrev string, err error) {
+func PutCouchDBByID(id string, payload interface{}) (string, string, error) {
+	cloudantUrl := config.StrNoSQLDrive()
+	dbName := config.StrNoSQLDBname()
+	uri := cloudantUrl + "/" + dbName + "/" + id + "?conflicts=true"
+	accessToken := GetAccessToken()
+	headers := map[string]string{"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + accessToken};
+	resultData := CurlBodyJSONMustHeader("PUT", uri, payload, headers)
+
+	jsonToString := (resultData)
+	decode := []byte(jsonToString)
+	var data struct {
+		ID  string `json:"id"`
+		OK  bool   `json:"ok"`
+		Rev string `json:"rev"`
+	}
+	json.Unmarshal(decode, &data)
+
+	return data.ID, data.Rev, nil
+
+	//return responseRev(CurlBodyJSONMustHeaderClose("PUT", uri, payload, headers))
+}
+
+func DeleteCouchDBByID(id string, rev string) (string, string, error) {
+	cloudantUrl := config.StrNoSQLDrive()
+	dbName := config.StrNoSQLDBname()
+	uri := cloudantUrl + "/" + dbName + "/" + id + "?rev=" + rev
+	accessToken := GetAccessToken()
+	headers := map[string]string{"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + accessToken};
+	resultData := CurlBodyJSONMustHeader("DELETE", uri, nil, headers)
+
+	jsonToString := (resultData)
+	decode := []byte(jsonToString)
+	var data struct {
+		ID  string `json:"id"`
+		OK  bool   `json:"ok"`
+		Rev string `json:"rev"`
+	}
+	json.Unmarshal(decode, &data)
+
+	return data.ID, data.Rev, nil
+}
+
+
+func CreateCouchDB() (bool, error) {
+	cloudantUrl := config.StrNoSQLDrive()
+	dbName := config.StrNoSQLDBname()
+	uri := cloudantUrl + "/" + dbName
+	accessToken := GetAccessToken()
+	payload := map[string]interface{}{"id": dbName, "name": dbName,}
+	headers := map[string]string{"Content-Type": "application/json", "Accept": "application/json", "Authorization": "Bearer " + accessToken};
+	//resultData := CurlBodyJSON("POST", uri, payload)
+	resultData := CurlBodyJSONMustHeader("PUT", uri, payload, headers)
+
+	jsonToString := (resultData)
+	decode := []byte(jsonToString)
+	var data struct {
+		OK bool `json:"ok"`
+	}
+	json.Unmarshal(decode, &data)
+
+	return data.OK, nil
 }

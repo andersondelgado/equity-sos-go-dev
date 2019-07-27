@@ -17,8 +17,9 @@ import (
 	"github.com/andersondelgado/equity-sos-go-dev/model"
 	"github.com/andersondelgado/equity-sos-go-dev/util"
 	"github.com/gin-gonic/gin"
-	"github.com/timjacobi/go-couchdb"
+	//"github.com/timjacobi/go-couchdb"
 )
+
 
 func SelectDBTest(c *gin.Context) {
 	cloudantUrl := config.StrNoSQLDrive()
@@ -27,12 +28,12 @@ func SelectDBTest(c *gin.Context) {
 	// 	log.Println("Can not connect to Cloudant database")
 	// }
 
-	cloudant := util.CloudantDefault()
-
-	//ensure db exists
-	//if the db exists the db will be returned anyway //id := c.Param("id")
-	dbName := config.StrNoSQLDBname()
-	cloudant.CreateDB(dbName)
+	//cloudant := util.CloudantDefault()
+	//
+	////ensure db exists
+	////if the db exists the db will be returned anyway //id := c.Param("id")
+	//dbName := config.StrNoSQLDBname()
+	//cloudant.CreateDB(dbName)
 
 	var result model.AlldocsResult
 	// var result model.Test
@@ -41,16 +42,13 @@ func SelectDBTest(c *gin.Context) {
 		return
 	}
 
-	errs := cloudant.DB(dbName).AllDocs(&result, couchdb.Options{"include_docs": true, "skip": 1, "limit": 100})
+	//errs := cloudant.DB(dbName).AllDocs(&result, couchdb.Options{"include_docs": true, "skip": 1, "limit": 100})
+
+	util.CreateCouchDB()
 	// errs := cloudant.DB(dbName).AllDocs(&result, couchdb.Options{"include_docs": false})
-	if errs != nil {
-		fmt.Println("error: ",errs)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to fetch docs"})
-	} else {
 
-		c.JSON(200, result.Rows)
+	c.JSON(200, result.Rows)
 
-	}
 }
 
 func SelectTest(c *gin.Context) {
@@ -399,19 +397,14 @@ func DeleteTest(c *gin.Context) {
 	if util.IsDelete(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
-		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
 			c.JSON(200, gin.H{})
 			return
 		}
 
-		cloudant.DB(dbName).Delete(id, rev)
+		//cloudant.DB(dbName).Delete(id, rev)
+		util.DeleteCouchDBByID(id, rev)
 		var datas util.Response
 		datas = util.Response{
 			true,
@@ -434,11 +427,11 @@ func AddTest(c *gin.Context) {
 	if util.IsCreate(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -462,8 +455,8 @@ func AddTest(c *gin.Context) {
 				c.JSON(200, datas)
 			} else {
 				var arrKey = []string{"tests"}
-				cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "tests": t})
-
+				//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "tests": t})
+				util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "tests": t})
 				datas = util.Response{
 					true,
 					"ok",
@@ -497,12 +490,12 @@ func PutTest(c *gin.Context) {
 	if util.IsUpdate(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
-		// cloudant.CreateDB(dbName)
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
+		//// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
 			c.JSON(200, gin.H{})
@@ -526,7 +519,9 @@ func PutTest(c *gin.Context) {
 			} else {
 				var arrKey = []string{"tests"}
 
-				cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "tests": t}, rev)
+				//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "tests": t}, rev)
+				//util.PutCouchDB(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "tests": t}, rev)
+				util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "tests": t, "_id": id, "_rev": rev})
 				datas = util.Response{
 					true,
 					"ok",
@@ -549,9 +544,3 @@ func PutTest(c *gin.Context) {
 	}
 }
 
-func JokeHandler(c *gin.Context) {
-	c.Header("Content-Type", "application/json")
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Jokes handler not implemented yet",
-	})
-}

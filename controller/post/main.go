@@ -539,11 +539,11 @@ func AddPost(c *gin.Context) {
 	if util.IsCreate(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -602,8 +602,8 @@ func AddPost(c *gin.Context) {
 					CreatedAt:    date,
 				}
 				var arrKey = []string{"posts"}
-				cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "posts": payload})
-
+				//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "posts": payload})
+				util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "posts": payload})
 				// smartContract.Init(payload)
 
 				datas = util.Response{
@@ -733,11 +733,11 @@ func PutPostBusiness(c *gin.Context) {
 	if util.IsUpdate(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -898,7 +898,9 @@ func PutPostBusiness(c *gin.Context) {
 
 			var arrKeyPost = []string{"posts"}
 
-			cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p}, rev)
+			//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p}, rev)
+			util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p, "_id": id, "_rev": rev})
+
 			datas = util.Response{
 				true,
 				"ok",
@@ -982,11 +984,11 @@ func PutPost(c *gin.Context) {
 	if util.IsUpdate(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -1133,8 +1135,8 @@ func PutPost(c *gin.Context) {
 
 			var arrKeyPost = []string{"posts"}
 
-			cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p}, rev)
-
+			//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p}, rev)
+			util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p, "_id": id, "_rev": rev})
 			datas = util.Response{
 				true,
 				"ok",
@@ -1169,11 +1171,11 @@ func DeletePost(c *gin.Context) {
 	if util.IsDelete(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -1181,7 +1183,8 @@ func DeletePost(c *gin.Context) {
 			return
 		}
 
-		cloudant.DB(dbName).Delete(id, rev)
+		//cloudant.DB(dbName).Delete(id, rev)
+		util.DeleteCouchDBByID(id, rev)
 		var datas util.Response
 		datas = util.Response{
 			true,

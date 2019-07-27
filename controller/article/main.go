@@ -380,11 +380,11 @@ func DeleteArticle(c *gin.Context) {
 	if util.IsDelete(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -392,7 +392,8 @@ func DeleteArticle(c *gin.Context) {
 			return
 		}
 
-		cloudant.DB(dbName).Delete(id, rev)
+		//cloudant.DB(dbName).Delete(id, rev)
+		util.DeleteCouchDBByID(id, rev)
 		var datas util.Response
 		datas = util.Response{
 			true,
@@ -415,11 +416,11 @@ func AddArticle(c *gin.Context) {
 	if util.IsCreate(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -443,8 +444,8 @@ func AddArticle(c *gin.Context) {
 				c.JSON(200, datas)
 			} else {
 				var arrKey = []string{"articles"}
-				cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t})
-
+				//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t})
+				util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t})
 				datas = util.Response{
 					true,
 					"ok",
@@ -478,11 +479,11 @@ func PutArticle(c *gin.Context) {
 	if util.IsUpdate(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
+		//cloudant := util.CloudantDefault()
 
 		//ensure db exists
 		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -506,7 +507,8 @@ func PutArticle(c *gin.Context) {
 				c.JSON(200, datas)
 			} else {
 				var arrKey = []string{"articles"}
-				cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t}, rev)
+				//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t}, rev)
+				util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t, "_id": id, "_rev": rev})
 				datas = util.Response{
 					true,
 					"ok",
@@ -537,11 +539,11 @@ func BulkArticle(c *gin.Context) {
 	// if util.IsCreate(c, rol).Success == true {
 
 	cloudantUrl := config.StrNoSQLDrive()
-	cloudant := util.CloudantDefault()
+	//cloudant := util.CloudantDefault()
 
 	//ensure db exists
 	//if the db exists the db will be returned anyway
-	dbName := config.StrNoSQLDBname()
+	//dbName := config.StrNoSQLDBname()
 	// cloudant.CreateDB(dbName)
 
 	if cloudantUrl == "" {
@@ -565,8 +567,8 @@ func BulkArticle(c *gin.Context) {
 			c.JSON(200, datas)
 		} else {
 			var arrKey = []string{"articles"}
-			cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t})
-
+			//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t})
+			util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "articles": t})
 			datas = util.Response{
 				true,
 				"ok",

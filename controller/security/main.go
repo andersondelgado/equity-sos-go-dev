@@ -26,11 +26,11 @@ import (
 func Register(c *gin.Context) {
 
 	cloudantUrl := config.StrNoSQLDrive()
-	cloudant := util.CloudantDefault()
-
-	//ensure db exists
-	//if the db exists the db will be returned anyway
-	dbName := config.StrNoSQLDBname()
+	//cloudant := util.CloudantDefault()
+	//
+	////ensure db exists
+	////if the db exists the db will be returned anyway
+	//dbName := config.StrNoSQLDBname()
 	// cloudant.CreateDB(dbName)
 
 	if cloudantUrl == "" {
@@ -106,7 +106,8 @@ func Register(c *gin.Context) {
 				c.JSON(200, datas)
 			} else {
 				var arrKey = []string{"users"}
-				cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "users": tt})
+				//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "users": tt})
+				util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "users": tt})
 				c.JSON(200, user)
 			}
 		}
@@ -309,14 +310,14 @@ func EditUser(c *gin.Context) {
 func PermissionFaker(c *gin.Context) {
 	var datas util.Response
 	cloudantUrl := config.StrNoSQLDrive()
-	cloudant := util.CloudantDefault()
-
-	//ensure db exists
-	//if the db exists the db will be returned anyway
-	dbName := config.StrNoSQLDBname()
-	// cloudant.CreateDB(dbName)
-
-	var result model.AlldocsResult
+	//cloudant := util.CloudantDefault()
+	//
+	////ensure db exists
+	////if the db exists the db will be returned anyway
+	//dbName := config.StrNoSQLDBname()
+	//// cloudant.CreateDB(dbName)
+	//
+	//var result model.AlldocsResult
 	if cloudantUrl == "" {
 		c.JSON(200, gin.H{})
 		return
@@ -334,40 +335,56 @@ func PermissionFaker(c *gin.Context) {
 		fmt.Println(err1)
 	}
 
-	var arrKey = []string{"permissions"}
-	errs := cloudant.DB(dbName).AllDocs(&result, couchdb.Options{"include_docs": true, "startkey": arrKey})
-	if errs != nil {
-		// c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to fetch docs"})
-		datas = util.Response{
-			false,
-			"error_exception",
-			nil,
-		}
-		c.JSON(200, datas)
+	var arrKey1 = []string{"permissions", "_id", "_rev"}
+
+	query1 := model.QuerySelectorAll{
+		Selector: map[string]interface{}{
+			"meta": arrKey1[0],
+		},
+		Fields: arrKey1,
 	}
 
-	jsonToString, _ := json.Marshal(result.Rows)
-	// fmt.Println("##jsonToString: ", string(jsonToString))
+	respText1 := util.FindDataAll(query1)
 
-	decode := []byte(jsonToString)
-	var results []model.PermissionDocument
-	json.Unmarshal(decode, &results)
+	jsonToString1 := (respText1)
+	decode0x := []byte(jsonToString1)
+	var results1 model.PermissionDocumentsArray
+	json.Unmarshal(decode0x, &results1)
+
+	//var arrKey = []string{"permissions"}
+	//errs := cloudant.DB(dbName).AllDocs(&result, couchdb.Options{"include_docs": true, "startkey": arrKey})
+	//if errs != nil {
+	//	// c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to fetch docs"})
+	//	datas = util.Response{
+	//		false,
+	//		"error_exception",
+	//		nil,
+	//	}
+	//	c.JSON(200, datas)
+	//}
+	//
+	//jsonToString, _ := json.Marshal(result.Rows)
+	//// fmt.Println("##jsonToString: ", string(jsonToString))
+	//
+	//decode := []byte(jsonToString)
+	//var results []model.PermissionDocument
+	//json.Unmarshal(decode, &results)
 
 	var ts []model.Permission
 
-	for i := range results {
+	for i := range results1.Doc {
 		// fmt.Println("##doc: ", results[i].Doc)
 		// fmt.Println("##i: ", results[i].Doc.Test)
-		if results[i].Doc.Permission.ID != "" {
-			ts = append(ts, model.Permission{
-				IDs:                    results[i].Doc.ID,
-				Rev:                    results[i].Doc.Rev,
-				ID:                     results[i].Doc.ID,
-				ObjectModulePermission: results[i].Doc.Permission.ObjectModulePermission,
-				CreatedAt:              results[i].Doc.Permission.CreatedAt,
-				UpdatedAt:              results[i].Doc.Permission.UpdatedAt,
-			})
-		}
+
+		ts = append(ts, model.Permission{
+			IDs:                    results1.Doc[i].ID,
+			Rev:                    results1.Doc[i].Rev,
+			ID:                     results1.Doc[i].ID,
+			ObjectModulePermission: results1.Doc[i].Permission.ObjectModulePermission,
+			CreatedAt:              results1.Doc[i].Permission.CreatedAt,
+			UpdatedAt:              results1.Doc[i].Permission.UpdatedAt,
+		})
+
 	}
 
 	// var perm []model.Permission
@@ -395,7 +412,8 @@ func PermissionFaker(c *gin.Context) {
 
 			// db.Debug().Create(&t)
 			var arrKey = []string{"permissions"}
-			cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "permissions": t})
+			//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "permissions": t})
+			util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "permissions": t})
 		}
 	} else {
 		for i := range result1 {
@@ -563,11 +581,11 @@ func PermissionAll(c *gin.Context) {
 
 func AssignRoles(c *gin.Context) {
 	cloudantUrl := config.StrNoSQLDrive()
-	cloudant := util.CloudantDefault()
+	//cloudant := util.CloudantDefault()
 
 	//ensure db exists
 	//if the db exists the db will be returned anyway
-	dbName := config.StrNoSQLDBname()
+	//dbName := config.StrNoSQLDBname()
 	// cloudant.CreateDB(dbName)
 
 	if cloudantUrl == "" {
@@ -592,7 +610,8 @@ func AssignRoles(c *gin.Context) {
 			c.JSON(200, datas)
 		} else {
 			var arrKey = []string{"profiles"}
-			cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "profiles": t})
+			//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "profiles": t})
+			util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "profiles": t})
 			datas = util.Response{
 				true,
 				"ok",
@@ -614,11 +633,11 @@ func EditRoles(c *gin.Context) {
 	id := c.Param("id")
 
 	cloudantUrl := config.StrNoSQLDrive()
-	cloudant := util.CloudantDefault()
-
-	//ensure db exists
-	//if the db exists the db will be returned anyway
-	dbName := config.StrNoSQLDBname()
+	//cloudant := util.CloudantDefault()
+	//
+	////ensure db exists
+	////if the db exists the db will be returned anyway
+	//dbName := config.StrNoSQLDBname()
 	// cloudant.CreateDB(dbName)
 	var datas util.Response
 
@@ -627,117 +646,98 @@ func EditRoles(c *gin.Context) {
 		return
 	}
 
-	// var result model.AlldocsResult
-	var result map[string]interface{}
-	errs := cloudant.DB(dbName).Get(id, &result, couchdb.Options{"include_docs": true})
-	if errs != nil {
-		datas = util.Response{
-			false,
-			"error_exception",
-			nil,
-		}
-		c.JSON(200, datas)
-		// c.JSON(http.StatusInternalServerError, gin.H{"error": "unable to fetch docs"})
-	} else {
+	var arrKeyz = []string{"profiles", "_id", "_rev"}
 
-		jsonToString, _ := json.Marshal(result)
-		// fmt.Println("##jsonToString: ", string(jsonToString))
-		decode := []byte(jsonToString)
-
-		var results model.ProfileDoc
-		json.Unmarshal(decode, &results)
-
-		var result1 map[string]interface{}
-		var result2 map[string]interface{}
-
-		errs1 := cloudant.DB(dbName).Get(results.Profile.UserID, &result1, couchdb.Options{"include_docs": true})
-		if errs1 != nil {
-			fmt.Println("##errs1: ", errs1)
-		}
-
-		errs2 := cloudant.DB(dbName).Get(results.Profile.PermissionID, &result2, couchdb.Options{"include_docs": true})
-		if errs2 != nil {
-			fmt.Println("##errs2: ", errs2)
-		}
-
-		jsonToString1, _ := json.Marshal(result1)
-		//  fmt.Println("##jsonToString1: ", string(jsonToString1))
-		decode1 := []byte(jsonToString1)
-
-		jsonToString2, _ := json.Marshal(result2)
-		//  fmt.Println("##jsonToString2: ", string(jsonToString2))
-		decode2 := []byte(jsonToString2)
-
-		var resultUsers model.UserDoc
-		json.Unmarshal(decode1, &resultUsers)
-		var us model.User
-
-		//for i := range resultUsers {
-		// fmt.Println("#--<resultUsers.Doc.ID: ", resultUsers.ID)
-		// fmt.Println("#--<results.Profile.UserID: ", results.Profile.UserID)
-		if resultUsers.ID == results.Profile.UserID {
-			// fmt.Println("#--resultUsers.Doc.User.ID: ", resultUsers.ID)
-			us = model.User{
-				IDs:      resultUsers.ID,
-				Rev:      resultUsers.Rev,
-				ID:       resultUsers.ID,
-				Username: resultUsers.User.Username,
-				Email:    resultUsers.User.Email,
-				// Password: resultUsers[i].Doc.User.Password,
-			}
-		}
-		//}
-
-		var resultPerm model.PermissionDoc
-		json.Unmarshal(decode2, &resultPerm)
-		var perms model.Permission
-
-		//for i := range resultPerm {
-
-		if resultPerm.ID == results.Profile.PermissionID {
-			decodeModules := []byte(resultPerm.Permission.ObjectModulePermission)
-			// var modules map[string]interface{}
-			var modules interface{}
-			json.Unmarshal(decodeModules, &modules)
-
-			perms = model.Permission{
-				IDs:                    resultPerm.ID,
-				Rev:                    resultPerm.Rev,
-				ID:                     resultPerm.ID,
-				ObjectModulePermission: resultPerm.Permission.ObjectModulePermission,
-				Modules:                modules,
-			}
-		}
-
-		find := us
-		find1 := perms
-
-		fmt.Println("##find: ", (find))
-		fmt.Println("##find2: ", (find1))
-
-		// var results model.ProfileDoc
-		// json.Unmarshal(decode, &results)
-
-		t := model.Profile{
-			IDs:        results.ID,
-			Rev:        results.Rev,
-			ID:         results.ID,
-			User:       find,
-			Permission: find1,
-			CreatedAt:  results.Profile.CreatedAt,
-			UpdatedAt:  results.Profile.UpdatedAt,
-		}
-
-		datas = util.Response{
-			true,
-			"ok",
-			t,
-		}
-
-		c.JSON(200, datas)
-
-		// c.JSON(200, t)
+	queryz := model.QuerySelectorAll{
+		Selector: map[string]interface{}{
+			"meta": arrKeyz[0],
+			"_id":  id,
+		},
+		Fields: arrKeyz,
 	}
+
+	respTextz := util.FindDataAll(queryz)
+
+	jsonToStringz := (respTextz)
+	decodez := []byte(jsonToStringz)
+	var resultz model.ProfileDocumentsArray
+	json.Unmarshal(decodez, &resultz)
+
+	var arrKeyz1 = []string{"users", "_id", "_rev"}
+
+	queryz1 := model.QuerySelectorAll{
+		Selector: map[string]interface{}{
+			"meta": arrKeyz1[0],
+			"_id":  resultz.Doc[0].Profile.UserID,
+		},
+		Fields: arrKeyz1,
+	}
+
+	respTextz1 := util.FindDataAll(queryz1)
+
+	jsonToStringz1 := (respTextz1)
+	decodez1 := []byte(jsonToStringz1)
+	var resultz1 model.UserDocumentsArray
+	json.Unmarshal(decodez1, &resultz1)
+
+	var arrKeyz2 = []string{"permissions", "_id", "_rev"}
+
+	queryz2 := model.QuerySelectorAll{
+		Selector: map[string]interface{}{
+			"meta": arrKeyz2[0],
+			"_id":  resultz.Doc[0].Profile.PermissionID,
+		},
+		Fields: arrKeyz2,
+	}
+
+	respTextz2 := util.FindDataAll(queryz2)
+
+	jsonToStringz2 := (respTextz2)
+	decodez2 := []byte(jsonToStringz2)
+	var resultz2 model.PermissionDocumentsArray
+	json.Unmarshal(decodez2, &resultz2)
+
+	// var result model.AlldocsResult
+
+	decodeModules := []byte(resultz2.Doc[0].Permission.ObjectModulePermission)
+	// var modules map[string]interface{}
+	var modules interface{}
+	json.Unmarshal(decodeModules, &modules)
+
+	perms := model.Permission{
+		IDs:                    resultz2.Doc[0].ID,
+		Rev:                    resultz2.Doc[0].Rev,
+		ID:                     resultz2.Doc[0].ID,
+		ObjectModulePermission: resultz2.Doc[0].Permission.ObjectModulePermission,
+		Modules:                modules,
+	}
+
+	//find := us
+	find1 := perms
+	//
+	//fmt.Println("##find: ", (find))
+	//fmt.Println("##find2: ", (find1))
+
+	t := model.Profile{
+		IDs:        resultz.Doc[0].ID,
+		Rev:        resultz.Doc[0].Rev,
+		ID:         resultz.Doc[0].ID,
+		User:       resultz1.Doc[0].User,
+		Permission: find1,
+		CreatedAt:  resultz.Doc[0].Profile.CreatedAt,
+		UpdatedAt:  resultz.Doc[0].Profile.UpdatedAt,
+	}
+
+	datas = util.Response{
+		true,
+		"ok",
+		t,
+	}
+
+	c.JSON(200, datas)
+
+	// c.JSON(200, t)
+
 }
 
 func GetRolByUser(c *gin.Context) {
@@ -796,11 +796,11 @@ func UpdateRoles(c *gin.Context) {
 	rev := c.Param("rev")
 
 	cloudantUrl := config.StrNoSQLDrive()
-	cloudant := util.CloudantDefault()
-
-	//ensure db exists
-	//if the db exists the db will be returned anyway
-	dbName := config.StrNoSQLDBname()
+	//cloudant := util.CloudantDefault()
+	//
+	////ensure db exists
+	////if the db exists the db will be returned anyway
+	//dbName := config.StrNoSQLDBname()
 	// cloudant.CreateDB(dbName)
 
 	if cloudantUrl == "" {
@@ -824,7 +824,8 @@ func UpdateRoles(c *gin.Context) {
 			c.JSON(200, datas)
 		} else {
 			var arrKey = []string{"profiles"}
-			cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "profiles": t}, rev)
+			//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "profiles": t}, rev)
+			util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "profiles": t, "_id": id, "_rev": rev})
 			datas = util.Response{
 				true,
 				"ok",
@@ -1384,11 +1385,11 @@ func PutUsers(c *gin.Context) {
 	if util.IsUpdate(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -1456,7 +1457,8 @@ func PutUsers(c *gin.Context) {
 
 				var arrKey = []string{"users"}
 
-				cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "users": payloadUser}, rev)
+				//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "users": payloadUser}, rev)
+				util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "users": payloadUser, "_id": id, "_rev": rev})
 				datas = util.Response{
 					true,
 					"ok",
@@ -1491,11 +1493,11 @@ func DeleteUsers(c *gin.Context) {
 	if util.IsDelete(c, rol).Success == true {
 
 		cloudantUrl := config.StrNoSQLDrive()
-		cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
-		dbName := config.StrNoSQLDBname()
+		//cloudant := util.CloudantDefault()
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
+		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
 		if cloudantUrl == "" {
@@ -1503,7 +1505,8 @@ func DeleteUsers(c *gin.Context) {
 			return
 		}
 
-		cloudant.DB(dbName).Delete(id, rev)
+		//cloudant.DB(dbName).Delete(id, rev)
+		util.DeleteCouchDBByID(id, rev)
 		var datas util.Response
 		datas = util.Response{
 			true,

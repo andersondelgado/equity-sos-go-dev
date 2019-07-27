@@ -6,10 +6,11 @@ import (
 	"log"
 	"strconv"
 
-	"../../config"
-	"../../model"
-	"../../util"
+	"github.com/andersondelgado/equity-sos-go-dev/config"
+	"github.com/andersondelgado/equity-sos-go-dev/model"
+	"github.com/andersondelgado/equity-sos-go-dev/util"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func SelectDBTest(c *gin.Context) {

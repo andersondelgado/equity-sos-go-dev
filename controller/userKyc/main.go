@@ -260,11 +260,15 @@ func EditKycUser(c *gin.Context) {
 				decode := []byte(jsonToString)
 				var result model.KYCUserDocumentsArray
 				json.Unmarshal(decode, &result)
-				results := result //.Doc[0]
 
-				fmt.Println("********************************")
-				fmt.Println(results)
-				fmt.Println("********************************")
+				if len(result.Doc) > 0 {
+					attachmentDoc := result.Doc[0].KycUser.Attachment
+					for i := range attachmentDoc {
+						fmt.Println("********************************")
+						fmt.Println(attachmentDoc[i].Status)
+						fmt.Println("********************************\n\n")
+					}
+				}
 			}
 		}
 

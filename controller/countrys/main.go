@@ -7,9 +7,6 @@ import (
 	"log"
 	"strconv"
 
-	//"../../config"
-	//"../../model"
-	//"../../util"
 	"github.com/andersondelgado/equity-sos-go-dev/config"
 	"github.com/andersondelgado/equity-sos-go-dev/model"
 	"github.com/andersondelgado/equity-sos-go-dev/util"
@@ -254,7 +251,7 @@ func DeleteCountrys(c *gin.Context) {
 		}
 
 		//cloudant.DB(dbName).Delete(id, rev)
-		util.DeleteCouchDBByID(id, rev)
+		util.DeleteCouchDBByID(id,rev)
 		var datas util.Response
 		datas = util.Response{
 			true,
@@ -402,9 +399,9 @@ func PutCountrys(c *gin.Context) {
 
 		cloudantUrl := config.StrNoSQLDrive()
 		//cloudant := util.CloudantDefault()
-		//
-		////ensure db exists
-		////if the db exists the db will be returned anyway
+
+		//ensure db exists
+		//if the db exists the db will be returned anyway
 		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 

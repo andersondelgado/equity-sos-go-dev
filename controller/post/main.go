@@ -8,18 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	//"../../config"
-	//"../../model"
-	//
-	//"../../util"
-	//"github.com/andersondelgado/equity-sos/config"
-	//"github.com/andersondelgado/equity-sos/model"
-	//"github.com/andersondelgado/equity-sos/util"
-	//"../../config"
-	//"../../model"
-	//"../../util"
 	"github.com/andersondelgado/equity-sos-go-dev/config"
 	"github.com/andersondelgado/equity-sos-go-dev/model"
+
 	"github.com/andersondelgado/equity-sos-go-dev/util"
 	"github.com/gin-gonic/gin"
 )
@@ -604,7 +595,6 @@ func AddPost(c *gin.Context) {
 				var arrKey = []string{"posts"}
 				//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "posts": payload})
 				util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "posts": payload})
-				// smartContract.Init(payload)
 
 				datas = util.Response{
 					true,
@@ -900,7 +890,6 @@ func PutPostBusiness(c *gin.Context) {
 
 			//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p}, rev)
 			util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p, "_id": id, "_rev": rev})
-
 			datas = util.Response{
 				true,
 				"ok",
@@ -1136,7 +1125,7 @@ func PutPost(c *gin.Context) {
 			var arrKeyPost = []string{"posts"}
 
 			//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p}, rev)
-			util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p, "_id": id, "_rev": rev})
+			util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "tests": p, "_id": id, "_rev": rev})
 			datas = util.Response{
 				true,
 				"ok",
@@ -1172,9 +1161,9 @@ func DeletePost(c *gin.Context) {
 
 		cloudantUrl := config.StrNoSQLDrive()
 		//cloudant := util.CloudantDefault()
-		//
-		////ensure db exists
-		////if the db exists the db will be returned anyway
+
+		//ensure db exists
+		//if the db exists the db will be returned anyway
 		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 

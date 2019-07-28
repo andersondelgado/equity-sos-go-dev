@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
 	"github.com/andersondelgado/equity-sos-go-dev/config"
 	"github.com/andersondelgado/equity-sos-go-dev/model"
 	"github.com/dgrijalva/jwt-go"
@@ -1165,6 +1166,8 @@ func FindDataInterface(payload interface{}) string {
 	return resultData
 }
 
+// map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "tests": t}
+
 func PostCouchDB(payload interface{}) (string, string, error) {
 	cloudantUrl := config.StrNoSQLDrive()
 	dbName := config.StrNoSQLDBname()
@@ -1229,7 +1232,6 @@ func DeleteCouchDBByID(id string, rev string) (string, string, error) {
 	return data.ID, data.Rev, nil
 }
 
-
 func CreateCouchDB() (bool, error) {
 	cloudantUrl := config.StrNoSQLDrive()
 	dbName := config.StrNoSQLDBname()
@@ -1241,6 +1243,7 @@ func CreateCouchDB() (bool, error) {
 	resultData := CurlBodyJSONMustHeader("PUT", uri, payload, headers)
 
 	jsonToString := (resultData)
+	fmt.Println("create db: ",jsonToString)
 	decode := []byte(jsonToString)
 	var data struct {
 		OK bool `json:"ok"`

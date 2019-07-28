@@ -135,6 +135,8 @@ func PaginateArticle(c *gin.Context) {
 
 		respText := util.FindDataInterface(resultsx)
 
+		fmt.Println("##str:**************************************** ", respText)
+
 		jsonToString := (respText)
 		decode := []byte(jsonToString)
 		var results model.ArticleDocumentsArray
@@ -230,7 +232,7 @@ func SearchPaginateArticle(c *gin.Context) {
 				"selector": map[string]interface{}{
 					"meta": arrKey[0],
 					"articles.name": map[string]interface{}{
-						"$gt": t.Name,
+						"$regex": t.Name,
 					},
 					"tag": arrTag,
 				},
@@ -480,9 +482,9 @@ func PutArticle(c *gin.Context) {
 
 		cloudantUrl := config.StrNoSQLDrive()
 		//cloudant := util.CloudantDefault()
-
-		//ensure db exists
-		//if the db exists the db will be returned anyway
+		//
+		////ensure db exists
+		////if the db exists the db will be returned anyway
 		//dbName := config.StrNoSQLDBname()
 		// cloudant.CreateDB(dbName)
 
@@ -540,9 +542,9 @@ func BulkArticle(c *gin.Context) {
 
 	cloudantUrl := config.StrNoSQLDrive()
 	//cloudant := util.CloudantDefault()
-
-	//ensure db exists
-	//if the db exists the db will be returned anyway
+	//
+	////ensure db exists
+	////if the db exists the db will be returned anyway
 	//dbName := config.StrNoSQLDBname()
 	// cloudant.CreateDB(dbName)
 

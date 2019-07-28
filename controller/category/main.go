@@ -6,9 +6,6 @@ import (
 	"log"
 	"strconv"
 
-	//"../../config"
-	//"../../model"
-	//"../../util"
 	"github.com/andersondelgado/equity-sos-go-dev/config"
 	"github.com/andersondelgado/equity-sos-go-dev/model"
 	"github.com/andersondelgado/equity-sos-go-dev/util"
@@ -421,7 +418,6 @@ func AddCategory(c *gin.Context) {
 				var arrKey = []string{"categories"}
 				//cloudant.DB(dbName).Post(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "categories": t})
 				util.PostCouchDB(map[string]interface{}{"meta": arrKey[0], "tag": arrKey, "categories": t})
-
 				datas = util.Response{
 					true,
 					"ok",

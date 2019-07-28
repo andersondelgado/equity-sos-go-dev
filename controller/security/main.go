@@ -9,12 +9,6 @@ import (
 	"strconv"
 	"time"
 
-	//"../../config"
-	//"../../model"
-	//"../../util"
-	//"../../config"
-	//"../../model"
-	//"../../util"
 	"github.com/andersondelgado/equity-sos-go-dev/config"
 	"github.com/andersondelgado/equity-sos-go-dev/model"
 	"github.com/andersondelgado/equity-sos-go-dev/util"

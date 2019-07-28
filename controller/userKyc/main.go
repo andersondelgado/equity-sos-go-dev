@@ -244,6 +244,9 @@ func EditKycUser(c *gin.Context) {
 				}
 			} else {
 
+				//cloudant := util.CloudantDefault()
+				//dbName := config.StrNoSQLDBname()
+				var attachmentDB []model.KycAttachment
 				var arrKey = []string{"kyc_user", "_id", "_rev"}
 
 				query := model.QuerySelectorAll{
@@ -255,7 +258,6 @@ func EditKycUser(c *gin.Context) {
 				}
 
 				respText := util.FindDataAll(query)
-
 				jsonToString := (respText)
 				decode := []byte(jsonToString)
 				var result model.KYCUserDocumentsArray
@@ -263,19 +265,50 @@ func EditKycUser(c *gin.Context) {
 
 				if len(result.Doc) > 0 {
 					attachmentDoc := result.Doc[0].KycUser.Attachment
-					for i := range attachmentDoc {
-						fmt.Println("********************************")
-						fmt.Println(attachmentDoc[i].Status)
-						fmt.Println("********************************\n\n")
+					//Put Data
+					if len(t.Attachment) > 0{
+						for j := range t.Attachment {
+							//Query
+							for i := range attachmentDoc {
+								validateExist := false
+								if t.Attachment[j].KycID != attachmentDoc[i].KycID{
+									for z := range attachmentDB {
+										if attachmentDB[z].KycID == attachmentDoc[i].KycID  {
+											validateExist = true
+											break
+										}
+									}
+
+									if validateExist {
+										break
+									}else{
+										attachmentDB = append(attachmentDB, attachmentDoc[i])
+									}
+								}
+							}
+						}
+
+						fmt.Println(len(attachmentDB))
+						for i := range attachmentDB {
+							t.Attachment = append(t.Attachment, attachmentDB[i])
+						}
+					}else{
+						t.Attachment = attachmentDoc
 					}
 				}
-			}
-		}
 
-		datas = util.Response{
-			true,
-			"ok",
-			nil,
+				//CloudantDB PUT
+				rev := t.Rev
+				id 	:= t.ID
+				var arrKeyPost = []string{"kyc_user"}
+				//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "kyc_user": t}, rev)
+				util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "kyc_user": t, "_id": id, "_rev": rev})
+				datas = util.Response{
+					true,
+					"ok",
+					t,
+				}
+			}
 		}
 	} else {
 		datas = util.IsEdit(c, rol)
@@ -361,3 +394,4 @@ func BulkKyc(c *gin.Context) {
 }
 
 // Documents KYC //
+

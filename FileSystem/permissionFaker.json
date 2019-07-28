@@ -340,14 +340,14 @@
         ]
       },
       {
-        "url": "/main/kyc-user",
+        "url": "/main/kyc-admin",
         "iconWeb": "",
         "mobile": "",
         "android": "",
         "ios": "",
         "ionic": "",
-        "name": "kyc user",
-        "lang_property": "kyc_user",
+        "name": "kyc admin",
+        "lang_property": "kyc_admin",
         "acl": "kyc_user",
         "visible": true,
         "value": [

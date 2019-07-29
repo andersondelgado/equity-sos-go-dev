@@ -22,6 +22,25 @@
         ]
       },
       {
+        "url": "/main/country",
+        "iconWeb": "",
+        "mobile": "",
+        "android": "",
+        "ios": "",
+        "ionic": "",
+        "name": "country",
+        "lang_property": "country",
+        "acl": "country",
+        "visible": false,
+        "value": [
+          "read",
+          "create",
+          "edit",
+          "update",
+          "delete"
+        ]
+      },
+      {
         "url": "/main/category",
         "iconWeb": "",
         "mobile": "",
@@ -106,6 +125,25 @@
         "name": "test",
         "lang_property": "test",
         "acl": "test",
+        "visible": false,
+        "value": [
+          "read",
+          "create",
+          "edit",
+          "update",
+          "delete"
+        ]
+      },
+      {
+        "url": "/main/country",
+        "iconWeb": "",
+        "mobile": "",
+        "android": "",
+        "ios": "",
+        "ionic": "",
+        "name": "country",
+        "lang_property": "country",
+        "acl": "country",
         "visible": false,
         "value": [
           "read",
@@ -217,6 +255,25 @@
         "name": "test",
         "lang_property": "test",
         "acl": "test",
+        "visible": false,
+        "value": [
+          "read",
+          "create",
+          "edit",
+          "update",
+          "delete"
+        ]
+      },
+      {
+        "url": "/main/country",
+        "iconWeb": "",
+        "mobile": "",
+        "android": "",
+        "ios": "",
+        "ionic": "",
+        "name": "country",
+        "lang_property": "country",
+        "acl": "country",
         "visible": false,
         "value": [
           "read",

@@ -109,6 +109,23 @@
           "create",
           "edit"
         ]
+      },
+      {
+        "url": "/main/kyc",
+        "iconWeb": "",
+        "mobile": "",
+        "android": "",
+        "ios": "",
+        "ionic": "",
+        "name": "kyc",
+        "lang_property": "kyc",
+        "acl": "kyc_user",
+        "visible": false,
+        "value": [
+          "read",
+          "create",
+          "edit"
+        ]
       }
     ]
   },
@@ -234,6 +251,23 @@
         "lang_property": "kyc_user",
         "acl": "kyc_user",
         "visible": true,
+        "value": [
+          "read",
+          "create",
+          "edit"
+        ]
+      },
+      {
+        "url": "/main/kyc",
+        "iconWeb": "",
+        "mobile": "",
+        "android": "",
+        "ios": "",
+        "ionic": "",
+        "name": "kyc",
+        "lang_property": "kyc",
+        "acl": "kyc_user",
+        "visible": false,
         "value": [
           "read",
           "create",
@@ -407,6 +441,23 @@
         "lang_property": "kyc_admin",
         "acl": "kyc_user",
         "visible": true,
+        "value": [
+          "read",
+          "create",
+          "edit"
+        ]
+      },
+      {
+        "url": "/main/kyc",
+        "iconWeb": "",
+        "mobile": "",
+        "android": "",
+        "ios": "",
+        "ionic": "",
+        "name": "kyc",
+        "lang_property": "kyc",
+        "acl": "kyc_user",
+        "visible": false,
         "value": [
           "read",
           "create",

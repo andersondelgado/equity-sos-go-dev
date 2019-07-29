@@ -119,7 +119,7 @@
         "ionic": "",
         "name": "kyc",
         "lang_property": "kyc",
-        "acl": "kyc_user",
+        "acl": "kyc",
         "visible": false,
         "value": [
           "read",
@@ -266,7 +266,7 @@
         "ionic": "",
         "name": "kyc",
         "lang_property": "kyc",
-        "acl": "kyc_user",
+        "acl": "kyc",
         "visible": false,
         "value": [
           "read",
@@ -456,7 +456,7 @@
         "ionic": "",
         "name": "kyc",
         "lang_property": "kyc",
-        "acl": "kyc_user",
+        "acl": "kyc",
         "visible": false,
         "value": [
           "read",

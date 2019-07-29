@@ -1125,7 +1125,7 @@ func PutPost(c *gin.Context) {
 			var arrKeyPost = []string{"posts"}
 
 			//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p}, rev)
-			util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "tests": p, "_id": id, "_rev": rev})
+			util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "posts": p, "_id": id, "_rev": rev})
 			datas = util.Response{
 				true,
 				"ok",

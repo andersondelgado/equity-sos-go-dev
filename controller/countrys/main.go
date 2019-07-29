@@ -16,7 +16,7 @@ import (
 func SelectCountrys(c *gin.Context) {
 
 	var rol util.Rol
-	rol.Acl = "test"
+	rol.Acl = "country"
 	var datas util.Response
 
 	if util.IsRead(c, rol).Success == true {
@@ -82,7 +82,7 @@ func PaginateCountrys(c *gin.Context) {
 	skip := c.Param("skip")
 	limit := c.Param("limit")
 	var rol util.Rol
-	rol.Acl = "test"
+	rol.Acl = "country"
 	var datas util.Response
 
 	if util.IsRead(c, rol).Success == true {
@@ -179,7 +179,7 @@ func EditCountrys(c *gin.Context) {
 	id := c.Param("id")
 
 	var rol util.Rol
-	rol.Acl = "test"
+	rol.Acl = "country"
 	var datas util.Response
 
 	if util.IsEdit(c, rol).Success == true {
@@ -232,7 +232,7 @@ func DeleteCountrys(c *gin.Context) {
 	rev := c.Param("rev")
 
 	var rol util.Rol
-	rol.Acl = "test"
+	rol.Acl = "country"
 	var datas util.Response
 
 	if util.IsDelete(c, rol).Success == true {
@@ -268,7 +268,7 @@ func DeleteCountrys(c *gin.Context) {
 
 func AddCountrys(c *gin.Context) {
 	var rol util.Rol
-	rol.Acl = "test"
+	rol.Acl = "country"
 	var datas util.Response
 
 	if util.IsCreate(c, rol).Success == true {
@@ -392,7 +392,7 @@ func PutCountrys(c *gin.Context) {
 	id := c.Param("id")
 	rev := c.Param("rev")
 	var rol util.Rol
-	rol.Acl = "test"
+	rol.Acl = "country"
 	var datas util.Response
 
 	if util.IsUpdate(c, rol).Success == true {

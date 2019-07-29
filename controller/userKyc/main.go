@@ -17,7 +17,7 @@ import (
 // Documents KYC //
 func SelectKyc(c *gin.Context) {
 	var rol util.Rol
-	rol.Acl = "test"
+	rol.Acl = "kyc"
 	var datas util.Response
 	datas = util.Response{
 		false,

@@ -62,6 +62,7 @@ func SelectCountrys(c *gin.Context) {
 				nil,
 			}
 			c.JSON(200, datas)
+			return
 		} else {
 
 			datas = util.Response{
@@ -70,11 +71,13 @@ func SelectCountrys(c *gin.Context) {
 				ts,
 			}
 			c.JSON(200, datas)
+			return
 		}
 	} else {
 		datas = util.IsRead(c, rol)
 
 		c.JSON(200, datas)
+		return
 	}
 }
 

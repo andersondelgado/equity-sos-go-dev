@@ -19,11 +19,11 @@ func SelectKyc(c *gin.Context) {
 	var rol util.Rol
 	rol.Acl = "kyc"
 	var datas util.Response
-	datas = util.Response{
-		false,
-		"error_exception",
-		nil,
-	}
+	//datas = util.Response{
+	//	false,
+	//	"error_exception",
+	//	nil,
+	//}
 
 	if util.IsRead(c, rol).Success == true {
 		var arrKey = []string{"kyc", "_id", "_rev"}
@@ -67,13 +67,17 @@ func SelectKyc(c *gin.Context) {
 				"ok",
 				ts,
 			}
+
+			c.JSON(200, datas)
+			return
 		}
 
 	} else {
 		datas = util.IsRead(c, rol)
-
+		c.JSON(200, datas)
+		return
 	}
-	c.JSON(200, datas)
+
 }
 
 // Documents KYC //
@@ -141,17 +145,25 @@ func SelectKycUser(c *gin.Context) {
 				"error_exception",
 				nil,
 			}
+
+			c.JSON(200, datas)
+			return
 		} else {
 			datas = util.Response{
 				true,
 				"ok",
 				ts,
 			}
+
+			c.JSON(200, datas)
+			return
 		}
 	} else {
 		datas = util.IsRead(c, rol)
+		c.JSON(200, datas)
+		return
 	}
-	c.JSON(200, datas)
+
 }
 
 func AddKycUser(c *gin.Context) {
@@ -266,14 +278,14 @@ func EditKycUser(c *gin.Context) {
 				if len(result.Doc) > 0 {
 					attachmentDoc := result.Doc[0].KycUser.Attachment
 					//Put Data
-					if len(t.Attachment) > 0{
+					if len(t.Attachment) > 0 {
 						for j := range t.Attachment {
 							//Query
 							for i := range attachmentDoc {
 								validateExist := false
-								if t.Attachment[j].KycID != attachmentDoc[i].KycID{
+								if t.Attachment[j].KycID != attachmentDoc[i].KycID {
 									for z := range attachmentDB {
-										if attachmentDB[z].KycID == attachmentDoc[i].KycID  {
+										if attachmentDB[z].KycID == attachmentDoc[i].KycID {
 											validateExist = true
 											break
 										}
@@ -281,7 +293,7 @@ func EditKycUser(c *gin.Context) {
 
 									if validateExist {
 										break
-									}else{
+									} else {
 										attachmentDB = append(attachmentDB, attachmentDoc[i])
 									}
 								}
@@ -292,14 +304,14 @@ func EditKycUser(c *gin.Context) {
 						for i := range attachmentDB {
 							t.Attachment = append(t.Attachment, attachmentDB[i])
 						}
-					}else{
+					} else {
 						t.Attachment = attachmentDoc
 					}
 				}
 
 				//CloudantDB PUT
 				rev := t.Rev
-				id 	:= t.ID
+				id := t.ID
 				var arrKeyPost = []string{"kyc_user"}
 				//cloudant.DB(dbName).Put(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "kyc_user": t}, rev)
 				util.PutCouchDBByID(id, map[string]interface{}{"meta": arrKeyPost[0], "tag": arrKeyPost, "kyc_user": t, "_id": id, "_rev": rev})

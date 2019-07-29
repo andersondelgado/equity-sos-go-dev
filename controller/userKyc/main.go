@@ -61,13 +61,21 @@ func SelectKyc(c *gin.Context) {
 			}
 		}
 
-		if len(results.Doc) > 0 {
+		if len(results.Doc) == 0 {
+			datas = util.Response{
+				false,
+				"error_exception",
+				nil,
+			}
+			c.JSON(200, datas)
+			return
+		} else {
+
 			datas = util.Response{
 				true,
 				"ok",
 				ts,
 			}
-
 			c.JSON(200, datas)
 			return
 		}
